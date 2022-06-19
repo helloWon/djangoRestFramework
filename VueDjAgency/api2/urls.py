@@ -23,4 +23,13 @@ urlpatterns = [
         name="post-detail",
     ),
     path("comment/", views.CommentCreateAPIView.as_view(), name="comment-list"),
+    path(
+        "post/<int:pk>/like/",
+        views.PostLikeAPIView.as_view(),
+        name="post-like",
+    ),
 ]
+
+## like 기능
+## /api/like/99/       GET
+## /api2/post/99/like/ PATCH

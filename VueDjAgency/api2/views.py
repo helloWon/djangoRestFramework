@@ -19,9 +19,21 @@
 #     queryset = Comment.objects.all()
 #     serializer_class = CommentSerializer
 
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
-from api2.serializers import CommentSerializer, PostListSerializer, PostRetrieveSerializer, PostSerializer
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    CreateAPIView,
+    UpdateAPIView,
+)
+from api2.serializers import (
+    CommentSerializer,
+    PostLikeSerializer,
+    PostListSerializer,
+    PostRetrieveSerializer,
+    PostSerializer,
+)
 
+from rest_framework.response import Response
 from blog.models import Comment, Post
 
 
@@ -38,3 +50,25 @@ class PostRetrieveAPIView(RetrieveAPIView):
 class CommentCreateAPIView(CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+
+class PostLikeAPIView(UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostListSerializer  ## 5개 필드 다 처리
+    serializer_class = PostLikeSerializer  ## like 필드만 처리
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        data = {"like": instance.like + 1}
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, "_prefetched_objects_cache", None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        # return Response(serializer.data)
+        return Response(data["like"])
