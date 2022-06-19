@@ -25,7 +25,9 @@ from rest_framework.generics import (
     CreateAPIView,
     UpdateAPIView,
 )
+from rest_framework.views import APIView
 from api2.serializers import (
+    CateTagSerializer,
     CommentSerializer,
     PostLikeSerializer,
     PostListSerializer,
@@ -34,7 +36,7 @@ from api2.serializers import (
 )
 
 from rest_framework.response import Response
-from blog.models import Comment, Post
+from blog.models import Category, Comment, Post, Tag
 
 
 class PostListAPIView(ListAPIView):
@@ -72,3 +74,13 @@ class PostLikeAPIView(UpdateAPIView):
 
         # return Response(serializer.data)
         return Response(data["like"])
+
+
+class CateTagAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        cateList = Category.objects.all()
+        tagList = Tag.objects.all()
+
+        data = {"cateList": cateList, "tagList": tagList}
+        serializer = CateTagSerializer(instance=data)
+        return Response(serializer.data)

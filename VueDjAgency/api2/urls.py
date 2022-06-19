@@ -28,6 +28,11 @@ urlpatterns = [
         views.PostLikeAPIView.as_view(),
         name="post-like",
     ),
+    path(
+        "catetag/",
+        views.CateTagAPIView.as_view(),
+        name="catetag",
+    ),
 ]
 
 ## like 기능
