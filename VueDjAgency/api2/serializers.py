@@ -16,6 +16,18 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "image", "like", "category"]
 
 
+class PostListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ["id", "title", "image", "like", "category"]
+
+
+class PostRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        exclude = ["create_dt"]
+
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
